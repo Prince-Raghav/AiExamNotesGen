@@ -4,7 +4,7 @@ import dotenv from "dotenv"
 dotenv.config()
 
 if (!process.env.STRIPE_SECRET_KEY) {
-  throw new Error("Stripe secret key missing in .env");
+  console.log("Warning: Stripe secret key missing");
 }
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
