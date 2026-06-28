@@ -1,9 +1,13 @@
-import Notes from "../models/notes.model.js"
-import UserModel from "../models/user.model.js"
-import { generateGeminiResponse } from "../services/gemini.services.js"
-import { buildPrompt } from "../utils/promptBuilder.js"
+import Notes from "../models/notes.model.js";
+import UserModel from "../models/user.model.js";
+import { generateGeminiResponse } from "../services/groq.services.js";
+import { buildPrompt } from "../utils/promptBuilder.js";
 
 export const generateNotes = async (req, res) => {
+
+    console.log("generateNotes controller called");
+    console.log("User ID:", req.userId);
+
     try {
         const {
             topic,
@@ -13,17 +17,20 @@ export const generateNotes = async (req, res) => {
             includeDiagram = false,
             includeChart = false
         } = req.body;
+
         if (!topic) {
-            return res.status(400).json({ message: "Topic is required" })
+            return res.status(400).json({ message: "Topic is required" });
         }
-        const user = await UserModel.findById(req.userId)
+
+        const user = await UserModel.findById(req.userId);
+
         if (!user) {
-            return res.status(400).json({ message: "user is not found" })
+            return res.status(400).json({ message: "user is not found" });
         }
 
         if (user.credits < 10) {
-            user.isCreditAvailable = false
-            await user.save()
+            user.isCreditAvailable = false;
+            await user.save();
             return res.status(403).json({
                 message: "Insufficient credits"
             });
@@ -36,11 +43,12 @@ export const generateNotes = async (req, res) => {
             revisionMode,
             includeDiagram,
             includeChart
-        })
+        });
 
+        console.log("Prompt Generated:");
+        console.log(prompt);
 
-        const aiResponse = await generateGeminiResponse(prompt)
-   
+        const aiResponse = await generateGeminiResponse(prompt);
 
         const notes = await Notes.create({
             user: user._id,
@@ -51,10 +59,7 @@ export const generateNotes = async (req, res) => {
             includeDiagram,
             includeChart,
             content: aiResponse
-
-
-        })
-
+        });
 
         user.credits -= 10;
         if (user.credits <= 0) user.isCreditAvailable = false;
@@ -69,19 +74,15 @@ export const generateNotes = async (req, res) => {
 
         return res.status(200).json({
             data: aiResponse,
-      noteId: notes._id,
-      creditsLeft: user.credits
-        })
-
-
-
+            noteId: notes._id,
+            creditsLeft: user.credits
+        });
 
     } catch (error) {
         console.error(error);
-    res.status(500).json({
-      error: "AI generation failed",
-      message: error.message
-    });
-
+        res.status(500).json({
+            error: "AI generation failed",
+            message: error.message 
+        });
     }
-}
+};
