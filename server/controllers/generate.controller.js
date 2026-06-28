@@ -1,6 +1,7 @@
 import Notes from "../models/notes.model.js";
 import UserModel from "../models/user.model.js";
 import { generateGeminiResponse } from "../services/groq.services.js";
+
 import { buildPrompt } from "../utils/promptBuilder.js";
 
 export const generateNotes = async (req, res) => {
@@ -48,8 +49,9 @@ export const generateNotes = async (req, res) => {
         console.log("Prompt Generated:");
         console.log(prompt);
 
-        const aiResponse = await generateGeminiResponse(prompt);
+       const aiResponse = await generateGeminiResponse(prompt);
 
+console.log(JSON.stringify(aiResponse, null, 2));
         const notes = await Notes.create({
             user: user._id,
             topic,
