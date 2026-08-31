@@ -8,7 +8,7 @@ const groq = new Groq({
 export const generateGeminiResponse = async (prompt) => {
   try {
     const completion = await groq.chat.completions.create({
-      model: "llama-3.3-70b-versatile",
+      model: "mixtral-8x7b-32768",
       temperature: 0.2,
       messages: [
         {
@@ -18,7 +18,7 @@ export const generateGeminiResponse = async (prompt) => {
       ],
     });
 
-    const text = completion.choices[0].message.content;
+    const text = completion.choices[0]?.message?.content;
 
     if (!text) {
       throw new Error("No response from Groq");
@@ -29,7 +29,11 @@ export const generateGeminiResponse = async (prompt) => {
       .replace(/```/g, "")
       .trim();
 
-    return JSON.parse(cleanText);
+    try {
+      return JSON.parse(cleanText);
+    } catch (parseError) {
+      return { notes: cleanText, content: cleanText };
+    }
 
   } catch (error) {
     console.error("Groq Error:", error);
