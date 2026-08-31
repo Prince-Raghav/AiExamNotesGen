@@ -1,27 +1,17 @@
 import "dotenv/config";
-import Groq from "groq-sdk";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
-const groq = new Groq({
-  apiKey: process.env.GROQ_API_KEY,
-});
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || process.env.GROQ_API_KEY);
 
 export const generateGeminiResponse = async (prompt) => {
   try {
-    const completion = await groq.chat.completions.create({
-      model: "llama3-70b-8192",
-      temperature: 0.2,
-      messages: [
-        {
-          role: "user",
-          content: prompt,
-        },
-      ],
-    });
-
-    const text = completion.choices[0].message.content;
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    const text = response.text();
 
     if (!text) {
-      throw new Error("No response from Groq");
+      throw new Error("No response from Gemini");
     }
 
     const cleanText = text
@@ -32,7 +22,7 @@ export const generateGeminiResponse = async (prompt) => {
     return JSON.parse(cleanText);
 
   } catch (error) {
-    console.error("Groq Error:", error);
+    console.error("Gemini Error:", error);
     throw error;
   }
 };
