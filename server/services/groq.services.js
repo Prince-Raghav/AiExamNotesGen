@@ -8,7 +8,7 @@ const groq = new Groq({
 export const generateGeminiResponse = async (prompt) => {
   try {
     const completion = await groq.chat.completions.create({
-      model: "llama-3.1-8b-instant",
+      model: "llama3-70b-8192",
       temperature: 0.2,
       messages: [
         {
