@@ -65,26 +65,6 @@ An AI-powered SaaS application that generates exam-oriented notes, revision mate
 
 ---
 
-# 📸 Screenshots
-
-### Home Page
-
-(Add Screenshot)
-
-### AI Generated Notes
-
-(Add Screenshot)
-
-### Diagram Generation
-
-(Add Screenshot)
-
-### Charts
-
-(Add Screenshot)
-
----
-
 # 📂 Project Structure
 
 ```
@@ -246,7 +226,7 @@ https://github.com/Prince-Raghav
 
 LinkedIn
 
-(Add your LinkedIn profile)
+https://www.linkedin.com/in/prince-raghav-55343332a/
 
 ---
 
