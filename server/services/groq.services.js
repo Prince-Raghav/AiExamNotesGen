@@ -8,6 +8,7 @@ export const generateGeminiResponse = async (prompt) => {
     const completion = await groq.chat.completions.create({
       model: "openai/gpt-oss-20b",
       temperature: 0.2,
+      max_completion_tokens: 8000,
       messages: [
         {
           role: "user",
@@ -15,6 +16,7 @@ export const generateGeminiResponse = async (prompt) => {
         },
       ],
     });
+    console.log("Groq full response:", JSON.stringify(completion, null, 2));
     const text = completion.choices[0]?.message?.content;
     if (!text) {
       throw new Error("No response from Groq");
